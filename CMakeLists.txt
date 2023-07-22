@@ -9,7 +9,9 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 # Compile target
 set(SOURCE_FILES
-    "src/main.cpp")
+    "src/main.cpp"
+    "src/models.hpp"
+    "src/dictionary.hpp")
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 

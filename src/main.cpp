@@ -1,125 +1,214 @@
-#include <iostream>
-#include <map>
+#include "dictionary.hpp"
 
-template <typename _Tp> struct map_init_helper {
-    _Tp& m_data;
-    map_init_helper(_Tp& data) : m_data(data) {}
-    map_init_helper& operator() (typename _Tp::key_type const& key, typename _Tp::mapped_type const& value)
-        { m_data[key] = value; return *this; }
+class ntot
+{
+public:
+    ntot(const std::string& input)
+        : m_input(input)
+        , m_size(input.size())
+        , m_numGroups(0)
+        , m_numUngrouped(m_size % 3)
+        , m_ungrouped(0)
+        , m_npos(0)
+    {
+        m_grpVect.clear();
+        m_strVect.clear();
+        
+        init();
+        digest();
+    }
+    
+    ~ntot()
+        { m_grpVect.clear(); m_strVect.clear(); }
+    
+    void print()
+    {
+        std::cout << std::endl << "*****************************************************" << std::endl;
+        for (auto s : m_strVect)
+            std::cout << s << " ";
+        std::cout << std::endl << "*****************************************************" << std::endl << std::endl;
+    }
+    
+    void printStats()
+    {
+        std::cout << "input:        " << m_input << std::endl;
+        std::cout << "size:         " << m_size << std::endl;
+        std::cout << "numGroups:    " << m_numGroups << std::endl;
+        std::cout << "numUngrouped: " << m_numUngrouped << std::endl;
+        std::cout << "ungrouped:    " << m_ungrouped << std::endl;
+    }
+    
+private:
+    
+    void init()
+    {
+        if ( !hasOnlyDigits() )
+            return;
+        calcNumGroups();
+        calcNumUngrouped();
+        assignUngrouped();
+        populateGrpVect();
+    }
+    
+    bool hasOnlyDigits()
+    {
+        for (auto ch : m_input)
+        {
+            if (!std::isdigit(ch))
+                return false;
+        }
+        return true;
+    }
+    
+    void calcNumGroups()
+    {
+        std::size_t size = m_size;
+        while (size >= 3)
+        { m_numGroups++; size -= 3; }
+    }
+    
+    void calcNumUngrouped()
+    {
+        m_numUngrouped = m_size % 3;
+    }
+    
+    void assignUngrouped()
+    {
+        std::string str = m_input.substr(0, m_numUngrouped);
+        if ( str.size() )
+            m_ungrouped = std::stoi(str);
+    }
+    
+    void populateGrpVect()
+    {
+        unsigned long pos = m_numUngrouped;
+        for (int i = 0; i < m_numGroups; i++)
+        {
+            std::string grpStr = m_input.substr(pos, 3);
+            Group group;
+            
+            char ch = grpStr.at(0);
+            std::get<0>(group) = std::stoi(&ch);
+            ch = grpStr.at(1);
+            std::get<1>(group) = std::stoi(&ch);
+            ch = grpStr.at(2);
+            std::get<2>(group) = std::stoi(&ch);
+            
+            m_grpVect.push_back(group);
+            
+            // Move cursor position
+            pos+=3;
+            
+            // New group
+            //std::cout << "Group added: " << std::get<0>(m_grpVect.at(i)) << std::get<1>(m_grpVect.at(i)) << std::get<2>(m_grpVect.at(i)) << std::endl;
+        }
+    }
+    
+    void digest()
+    {
+        printStats();
+        
+        convertUngrouped();
+        //convertGroup();
+        
+    }
+    
+    void convertUngrouped()
+    {
+        std::string str = std::to_string(m_ungrouped);
+        int val = std::stoi(str);
+        char ch0, ch1, ch2;
+        int i0, i1, i2;
+        
+        switch(m_numUngrouped)
+        {
+            case 0:
+                str = m_input;
+                val = std::stoi(str);
+                ch0 = str.at(0);
+                i0 = std::atoi(&ch0);
+                                
+                if (i0 != 0)
+                {
+                    m_strVect.push_back( dictmap.at(static_cast<Dictionary>( i0 )) );
+                    m_strVect.push_back( dictmap.at( Dictionary::Hundred ));
+                }
+                
+                val = val % 100;
+                str = std::to_string(val);
+                ch0 = str.at(0);
+                i0 = std::atoi(&ch0);
+                
+                if (i0 != 0)
+                    m_strVect.push_back( dictmap.at(static_cast<Dictionary>( i0 + 18 )) );
+                
+                val = val % 10;
+                str = std::to_string(val);
+                ch0 = str.at(0);
+                i0 = std::atoi(&ch0);
+                
+                if (i0 != 0)
+                    m_strVect.push_back( dictmap.at(static_cast<Dictionary>( i0 )) );
+                
+                break;
+                
+            case 1:
+                ch0 = str.at(0);
+                m_strVect.push_back( dictmap.at(static_cast<Dictionary>(std::stoi(&ch0))) );
+                break;
+                
+            case 2:
+                ch0 = str.at(0);
+                ch1 = str.at(1);
+                i0 = std::atoi(&ch0);
+                i1 = std::atoi(&str.at(1));
+                
+                if (i0 != 1)
+                {
+                    m_strVect.push_back( dictmap.at(static_cast<Dictionary>( i0 + 18 )) );
+                    
+                    if (i1 != 0)
+                        m_strVect.push_back( dictmap.at(static_cast<Dictionary>( i1 )) );
+                }
+                else
+                    m_strVect.push_back( dictmap.at(static_cast<Dictionary>( i1 + 10 )) );
+                break;
+                
+            default:
+                break;
+        }
+        
+        if ( m_numGroups > 1 )
+            m_strVect.push_back( dictmap.at(static_cast<Dictionary>( m_numGroups + 28 )) );
+        
+        // Move cursor
+        m_npos = static_cast<unsigned>(m_numUngrouped);
+    }
+    
+private:
+    
+    std::string              m_input;
+    std::size_t              m_size;
+    std::size_t              m_numGroups;
+    std::size_t              m_numUngrouped;
+    unsigned short int       m_ungrouped;
+    unsigned int             m_npos;
+    std::vector<Group>       m_grpVect;
+    std::vector<std::string> m_strVect;
 };
-
-template <typename _Tp>
-map_init_helper<_Tp> map_init(_Tp& item)
-    { return map_init_helper<_Tp>(item); }
-
-
-
-
-
-
-
-
-enum class Dictionary : unsigned {
-    Zero        = 0,
-    One         = 1,
-    Two         = 2,
-    Three       = 3,
-    Four        = 4,
-    Five        = 5,
-    Six         = 6,
-    Seven       = 7,
-    Eight       = 8,
-    Nine        = 9,
-    Ten         = 10,
-    Eleven      = 11,
-    Twelve      = 12,
-    Thirteen    = 13,
-    Fourteen    = 14,
-    Fifteen     = 15,
-    Sixteen     = 16,
-    Seventeen   = 17,
-    Eighteen    = 18,
-    Nineteen    = 19,
-    Twenty      = 20,
-    Thirty      = 21,
-    Fourty      = 22,
-    Fifty       = 23,
-    Sixty       = 24,
-    Seventy     = 26,
-    Eighty      = 27,
-    Ninety      = 28,
-    Hundred     = 29,
-    Thousand    = 30,
-    Million     = 31,
-    Billion     = 32,
-    Trillion    = 33,
-    Quadrillion = 34,
-    Quintillion = 35,
-    Sextillion  = 36,
-    Septillion  = 37,
-    Octillion   = 38,
-    Nonillion   = 39,
-    Decillion   = 40,
-    
-    ///< Keep Last -- determines number of enumerations
-    Count = 41
-};
-
-static const std::map<Dictionary, const char *> dictmap;
-
-static void init_dictmap() {
-    map_init(dictmap)
-        (Dictionary::Zero,        "Zero")
-        (Dictionary::One,         "One")
-        (Dictionary::Two,         "Two")
-        (Dictionary::Three,       "Three")
-        (Dictionary::Four,        "Four")
-        (Dictionary::Five,        "Five")
-        (Dictionary::Six,         "Six")
-        (Dictionary::Seven,       "Seven")
-        (Dictionary::Eight,       "Eight")
-        (Dictionary::Nine,        "Nine")
-        (Dictionary::Ten,         "Ten")
-        (Dictionary::Eleven,      "Eleven")
-        (Dictionary::Twelve,      "Twelve")
-        (Dictionary::Thirteen,    "Thirteen")
-        (Dictionary::Fourteen,    "Fourteen")
-        (Dictionary::Fifteen,     "Fifteen")
-        (Dictionary::Sixteen,     "Sixteen")
-        (Dictionary::Seventeen,   "Seventeen")
-        (Dictionary::Eighteen,    "Eighteen")
-        (Dictionary::Nineteen,    "Nineteen")
-        (Dictionary::Twenty,      "Twenty")
-        (Dictionary::Thirty,      "Thirty")
-        (Dictionary::Fourty,      "Fourty")
-        (Dictionary::Fifty,       "Fifty")
-        (Dictionary::Sixty,       "Sixty")
-        (Dictionary::Seventy,     "Seventy")
-        (Dictionary::Eighty,      "Eighty")
-        (Dictionary::Ninety,      "Ninety")
-        (Dictionary::Hundred,     "Hundred")
-        (Dictionary::Thousand,    "Thousand")
-        (Dictionary::Million,     "Million")
-        (Dictionary::Billion,     "Billion")
-        (Dictionary::Trillion,    "Trillion")
-        (Dictionary::Quadrillion, "Quadrillion")
-        (Dictionary::Quintillion, "Quintillion")
-        (Dictionary::Sextillion,  "Sextillion")
-        (Dictionary::Septillion,  "Septillion")
-        (Dictionary::Octillion,   "Octillion")
-        (Dictionary::Nonillion,   "Nonillion")
-        (Dictionary::Decillion,   "Decillion")
-    
-    
-    
-    
-    ;
-}
-
-
 
 int main(int argc, const char **argv)
 {
+    __init_dictmap();
+    
+    std::string value = "436";
+    std::cout << "*** Initializing conversion (#1) ***\n" << std::endl;
+    std::cout << "String Input: \"" << value << "\"" << std::endl << std::endl;
+    
+    ntot firstConv(value);
+    firstConv.print();
+    
+    std::cout << "\n*** Terminating conversion (#1) ***" << std::endl;
     
     
     return (EXIT_SUCCESS);
