@@ -1,6 +1,5 @@
 #include "ntot.hpp"
 #include <iomanip>
-#include <cstring>
 
 ntot::ntot(const std::string& input)
     : m_input(input)
@@ -171,10 +170,11 @@ void ntot::digestUngrouped()
         }
         else
         {
-            m_strVect.push_back( dictmap.at(static_cast<Dictionary>( p.first + 10 )) );
+            m_strVect.push_back( dictmap.at(static_cast<Dictionary>( p.second + 10 )) );
         }
         
-        m_strVect.push_back( dictmap.at(static_cast<Dictionary>( m_numGroups + 28 )) );
+        if (m_size > 2)
+            m_strVect.push_back( dictmap.at(static_cast<Dictionary>( m_numGroups + 28 )) );
     }
     
     //const unsigned WIDTH = 10;
