@@ -3,11 +3,25 @@
 
 #include "dictionary.hpp"
 
+#include <iomanip>
+
 #define MSG_STAT_INPUT        "| input:        "
 #define MSG_STAT_SIZE         "| size:         "
 #define MSG_STAT_NUMGROUPS    "| numGroups:    "
 #define MSG_STAT_NUMUNGROUPED "| numUngrouped: "
 #define MSG_STAT_UNGROUPED    "| ungrouped:    "
+
+static void printGroup(const Group& group, const int num)
+{
+    const unsigned WIDTH = 20;
+    
+    std::cout << std::endl;
+    std::cout << BOLDYELLOW << "- Digesting Group " << num << " -" << RESET << std::endl;
+    std::cout << '*'  << std::setw(WIDTH) << std::setfill('-') << '*' << std::endl;
+    std::cout << "|     ";
+    std::cout << std::get<0>(group) << "   " << std::get<1>(group) << "   " << std::get<2>(group) << "     |" << std::endl;
+    std::cout << '*' << std::setw(WIDTH) << std::setfill('-') << '*' << std::endl;
+}
 
 class ntot
 {
