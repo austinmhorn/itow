@@ -36,7 +36,7 @@ const std::string& ntot::getInput() const
 
 void ntot::print()
 {
-    unsigned spacing = static_cast<unsigned>(calcSpacing() + m_input.size() - 2);
+    auto spacing = static_cast<unsigned>(calcSpacing() + m_input.size() + 6 + m_strVect.size());
     
     std::cout << '\n' << BOLDGREEN << "- Result -" << RESET << std::endl;
     std::cout << '*' << std::setw(spacing) << std::setfill('-') << '*' << std::endl;
@@ -88,22 +88,10 @@ bool ntot::hasOnlyDigits()
 unsigned int ntot::calcSpacing()
 {
     unsigned int chCount = 0;
-    unsigned int wdCount = 0;
     // Determine # of characters in the entire result string
     for (auto s : m_strVect)
-    {
         chCount += s.size();
-        wdCount++;
-    }
-    
-    // Configure left/right padding with respect to word count
-    if (wdCount < 2)
-        chCount += (2 * m_strVect.size()) + 1;
-    else if (wdCount % 2 == 0) // Even
-        chCount += (2 * m_strVect.size()) - 2;
-    else
-        chCount += (2 * m_strVect.size()) - 1;
-    
+
     return chCount;
 }
 

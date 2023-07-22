@@ -28,10 +28,10 @@
 
 const std::string promptUserForInputValue()
 {
-    std::string input = "91011";
+    std::string input = "";
     std::cout << BOLDYELLOW << "** Enter an integer " << UNDERLINE << "OR" << RESET << BOLDYELLOW << " nothing for a random value **" << RESET << std::endl;
     std::cout << ">> ";
-    //std::getline(std::cin, input);
+    std::getline(std::cin, input);
     if (!input.size())
         input = std::to_string(random_ranged_ulong(0, 999999));
     return input;
