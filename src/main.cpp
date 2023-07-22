@@ -1,4 +1,5 @@
 #include "main.hpp"
+#include <iomanip>
 
 const std::string promptUserForInputValue();
 
@@ -6,9 +7,15 @@ int main(int argc, const char **argv)
 {
     
     std::string value = promptUserForInputValue();
+    const unsigned WIDTH = 9;
     
-    //std::cout << "*** Initializing conversion (#1) ***" << std::endl;
-    std::cout << '\n' << "Input being translated: \"" << value << "\"" << std::endl;
+    std::cout << std::endl << std::endl;
+    std::cout << BOLDYELLOW << "- Raw Input -" << RESET << std::endl;
+    std::cout << '*' << std::setw(static_cast<unsigned>(WIDTH+value.size())) << std::setfill('-') << '*' << std::endl;
+    std::cout << "|   " << "\"" << value << "\"" << "   |" << std::endl;
+    std::cout << '*' << std::setw(static_cast<unsigned>(WIDTH+value.size())) << std::setfill('-') << '*' << std::endl;
+    
+    //waitForEnter();
     
     ntot converter(value);
     converter.printStats();
@@ -16,8 +23,5 @@ int main(int argc, const char **argv)
     
     //std::cout << "\n*** Terminating conversion (#1) ***" << std::endl;
     
-    
     return (EXIT_SUCCESS);
 }
-
-

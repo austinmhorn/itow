@@ -27,6 +27,13 @@
 #define ITALIC      "\033[3m"         ///< Italic
 #define UNDERLINE   "\033[4m"         ///< Underline
 
+static void waitForEnter()
+{
+    std::cout << ITALIC << "\n>> Press " << RESET << BOLDGREEN << "ENTER" << RESET << ITALIC << " to continue..." << RESET;
+    std::cin.ignore();
+    std::cout << std::flush;
+}
+
 template <
     typename _Tp,
     typename _Alloc     = std::allocator<_Tp>,

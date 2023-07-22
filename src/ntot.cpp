@@ -7,7 +7,6 @@ ntot::ntot(const std::string& input)
     , m_numGroups(0)
     , m_numUngrouped(m_size % 3)
     , m_ungrouped(0)
-    , m_npos(0)
 {
     __init_dictmap();
     
@@ -37,9 +36,9 @@ const std::string& ntot::getInput() const
 
 void ntot::print()
 {
-    unsigned spacing = static_cast<unsigned>(calcSpacing() + m_input.size() + 4);
+    unsigned spacing = static_cast<unsigned>(calcSpacing() + m_input.size() - 2);
     
-    std::cout << '\n' << "- Result -" << std::endl;
+    std::cout << '\n' << BOLDGREEN << "- Result -" << RESET << std::endl;
     std::cout << '*' << std::setw(spacing) << std::setfill('-') << '*' << std::endl;
     std::cout << "| " << m_input << " -> ";
     for (auto s : m_strVect)
@@ -50,26 +49,27 @@ void ntot::print()
 
 void ntot::printStats()
 {
-    const int WIDTH = 60;
+    const int WIDTH = 35;
     std::string ungroupedStr = std::to_string(m_ungrouped);
     std::string sizeStr = std::to_string(m_size);
+    std::string numGroupsStr = std::to_string(m_numGroups);
     std::string numUngroupedStr = std::to_string(m_numUngrouped);
     
-    std::cout << '\n' << YELLOW << "- Transliteration Statistics -" << RESET << std::endl;
+    std::cout << '\n' << BOLDYELLOW << "- Transliteration Statistics -" << RESET << std::endl;
     std::cout << '*' << std::setw(WIDTH) << std::setfill('-') << '*' << std::endl;
     std::cout << MSG_STAT_INPUT        << m_input        << std::setw(static_cast<unsigned>(WIDTH-strlen(MSG_STAT_INPUT)-static_cast<unsigned>(m_input.size()) + 1))                << std::setfill(' ') << '|' <<std::endl;
     std::cout << MSG_STAT_SIZE         << m_size         << std::setw(static_cast<unsigned>(WIDTH-strlen(MSG_STAT_SIZE)-static_cast<unsigned>(sizeStr.size()) + 1))                 << std::setfill(' ') << '|' <<std::endl;
-    std::cout << MSG_STAT_NUMGROUPS    << m_numGroups    << std::setw(static_cast<unsigned>(WIDTH-strlen(MSG_STAT_NUMGROUPS)-static_cast<unsigned>(m_numGroups) + 1))               << std::setfill(' ') << '|' <<std::endl;
+    std::cout << MSG_STAT_NUMGROUPS    << m_numGroups    << std::setw(static_cast<unsigned>(WIDTH-strlen(MSG_STAT_NUMGROUPS)-static_cast<unsigned>(numGroupsStr.size()) + 1))       << std::setfill(' ') << '|' <<std::endl;
     std::cout << MSG_STAT_NUMUNGROUPED << m_numUngrouped << std::setw(static_cast<unsigned>(WIDTH-strlen(MSG_STAT_NUMUNGROUPED)-static_cast<unsigned>(numUngroupedStr.size()) + 1)) << std::setfill(' ') << '|' <<std::endl;
     std::cout << MSG_STAT_UNGROUPED    << m_ungrouped    << std::setw(static_cast<unsigned>(WIDTH-strlen(MSG_STAT_UNGROUPED)-static_cast<unsigned>(ungroupedStr.size()) + 1))       << std::setfill(' ') << '|' <<std::endl;
     std::cout << '*' << std::setw(WIDTH) << std::setfill('-') << '*' << std::endl;
 }
 
 void ntot::init()
-
 {
     if ( !hasOnlyDigits() )
         return;
+    
     calcNumGroups();
     calcNumUngrouped();
     assignUngrouped();
@@ -79,10 +79,9 @@ void ntot::init()
 bool ntot::hasOnlyDigits()
 {
     for (auto ch : m_input)
-    {
         if (!std::isdigit(ch))
             return false;
-    }
+
     return true;
 }
 
@@ -146,103 +145,84 @@ void ntot::populateGrpVect()
         
         // Move cursor position
         pos+=3;
-        
-        // New group
-        //std::cout << "Group added: " << std::get<0>(m_grpVect.at(i)) << std::get<1>(m_grpVect.at(i)) << std::get<2>(m_grpVect.at(i)) << std::endl;
     }
 }
 
 void ntot::digest()
 {
-    digestSmall();
+    digestUngrouped();
+    
+    unsigned num = 0;
+    
+    // Digest grouped values group by group
+    for (auto group : m_grpVect)
+        digestGroup(group, ++num);
+    
     
 }
 
-void ntot::digestGroup(const Group& group)
-{
-    
-}
-
-void ntot::digestSmall()
+void ntot::digestUngrouped()
 {
     std::string str = std::to_string(m_ungrouped);
-    int val = std::stoi(str);
-    char ch0, ch1;
-    int i0, i1;
-    bool isTeenVal = false;
     
-    switch(m_numUngrouped)
+    
+    if ( m_numUngrouped == 1 )
     {
-        case 0:
-            str = m_input;
-            val = std::stoi(str);
-            ch0 = str.at(0);
-            i0 = std::atoi(&ch0);
-                            
-            if (i0 != 0)
-            {
-                m_strVect.push_back( dictmap.at(static_cast<Dictionary>( i0 )) );
-                m_strVect.push_back( dictmap.at( Dictionary::Hundred ));
-            }
-            
-            val = val % 100;
-            str = std::to_string(val);
-            ch0 = str.at(0);
-            i0 = std::atoi(&ch0);
-
-            if (i0 > 1)
-                m_strVect.push_back( dictmap.at(static_cast<Dictionary>( i0 + 18 )) );
-            isTeenVal = (i0 == 1) ? true : false;
-            
-            val = val % 10;
-            str = std::to_string(val);
-            ch0 = str.at(0);
-            i0 = std::atoi(&ch0);
-            
-            if (i0 != 0 && isTeenVal)
-            {
-                m_strVect.push_back( dictmap.at(static_cast<Dictionary>( i0 + 10 )) );
-                
-                val = val % 10;
-                str = std::to_string(val);
-                ch0 = str.at(0);
-                i0 = std::atoi(&ch0);
-            }
-            
-            if (i0 != 0 && i0 != 1)
-                m_strVect.push_back( dictmap.at(static_cast<Dictionary>( i0 )) );
-
-            break;
-            
-        case 1:
-            ch0 = str.at(0);
-            m_strVect.push_back( dictmap.at(static_cast<Dictionary>(std::stoi(&ch0))) );
-            break;
-            
-        case 2:
-            ch0 = str.at(0);
-            ch1 = str.at(1);
-            i0 = std::atoi(&ch0);
-            i1 = std::atoi(&str.at(1));
-            
-            if (i0 != 1)
-            {
-                m_strVect.push_back( dictmap.at(static_cast<Dictionary>( i0 + 18 )) );
-                
-                if (i1 != 0)
-                    m_strVect.push_back( dictmap.at(static_cast<Dictionary>( i1 )) );
-            }
-            else
-                m_strVect.push_back( dictmap.at(static_cast<Dictionary>( i1 + 10 )) );
-            break;
-            
-        default:
-            break;
+        m_strVect.push_back( dictmap.at(static_cast<Dictionary>( m_ungrouped )) );
+    }
+    else if ( m_numUngrouped == 2 )
+    {
+        std::pair<unsigned int, unsigned int> p = std::make_pair(std::stoi(str.substr(0, 1)), std::atoi(&str.at(1)));
+        //std::cout << p.first << " " << p .second << std::endl;
+        
+        if ( p.first > 1 )
+        {
+            m_strVect.push_back( dictmap.at(static_cast<Dictionary>( p.first + 18 )) );
+            m_strVect.push_back( dictmap.at(static_cast<Dictionary>( p.second )) );
+        }
+        else
+        {
+            m_strVect.push_back( dictmap.at(static_cast<Dictionary>( p.first + 10 )) );
+        }
+        
+        m_strVect.push_back( dictmap.at(static_cast<Dictionary>( m_numGroups + 28 )) );
     }
     
-    if ( m_numGroups > 1 )
-        m_strVect.push_back( dictmap.at(static_cast<Dictionary>( m_numGroups + 28 )) );
+    //const unsigned WIDTH = 10;
+    //std::cout << '\n' << BOLDYELLOW << "- Digesting Ungrouped -" << RESET << std::endl;
+    //std::cout << '*' << std::setw(WIDTH) << std::setfill('-') << '*' << std::endl;
+}
+
+void ntot::digestGroup(const Group& group, const int num)
+{
+    printGroup(group, num);
     
-    // Move cursor
-    m_npos = static_cast<unsigned>(m_numUngrouped);
+    int ones = std::get<2>(group);
+    int tens = std::get<1>(group);
+    int hnds = std::get<0>(group);
+    
+    if ( hnds > 0 )
+    {
+        m_strVect.push_back( dictmap.at(static_cast<Dictionary>(std::get<0>(group))) );
+        m_strVect.push_back( dictmap.at(Dictionary::Hundred) );
+    }
+    
+    if ( tens > 1 )
+    {
+        m_strVect.push_back( dictmap.at(static_cast<Dictionary>( tens + 18 )) );
+    }
+    else if ( tens == 1 )
+    {
+        m_strVect.push_back( dictmap.at(static_cast<Dictionary>( ones + 10 )) );
+    }
+    
+    if ( tens != 1 )
+        m_strVect.push_back( dictmap.at(static_cast<Dictionary>( ones )) );
+    
+    
+    if ( m_numGroups - num > 0 )
+        m_strVect.push_back( dictmap.at((static_cast<Dictionary>(static_cast<unsigned>(m_numGroups - num) + 28))) );
+        
+        
+    //waitForEnter();
 }

@@ -9,8 +9,6 @@
 #define MSG_STAT_NUMUNGROUPED "| numUngrouped: "
 #define MSG_STAT_UNGROUPED    "| ungrouped:    "
 
-
-
 class ntot
 {
 public:
@@ -48,10 +46,10 @@ private:
     
     // Main digestion call
     void digest();
-    // Digest input value that has 0 complete groups
-    void digestSmall();
+    // Digest ungrouped values
+    void digestUngrouped();
     // Digest a single group
-    void digestGroup(const Group& group);
+    void digestGroup(const Group& group, const int groupNum);
     
     
 private:
@@ -61,7 +59,6 @@ private:
     std::size_t              m_numGroups;    ///< Number of groups 
     std::size_t              m_numUngrouped; ///< Number of ungrouped values [0-2]
     unsigned short int       m_ungrouped;    ///< Integer value of ungrouped numbers
-    unsigned int             m_npos;         ///< Input string cursor position
     std::vector<Group>       m_grpVect;      ///< Stores groups in order of processing
     std::vector<std::string> m_strVect;      ///< Stores result translations
 };
