@@ -10,6 +10,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 # Compile target
 set(SOURCE_FILES
     "src/main.cpp"
+    "src/main.hpp"
+    "src/rng.hpp"
     "src/models.hpp"
     "src/dictionary.hpp"
     "src/ntot.hpp"

@@ -1,4 +1,4 @@
-#include "ntot.hpp"
+#include "main.hpp"
 
 const std::string promptUserForInputValue();
 
@@ -20,10 +20,4 @@ int main(int argc, const char **argv)
     return (EXIT_SUCCESS);
 }
 
-const std::string promptUserForInputValue()
-{
-    std::cout << "** Enter an integer OR nothing for a random value **" << std::endl;
-    std::string input = "11897";
-    //std::getline(std::cin, input);
-    return input;
-}
+

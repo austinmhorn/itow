@@ -39,7 +39,7 @@ void ntot::print()
 {
     unsigned spacing = static_cast<unsigned>(calcSpacing() + m_input.size() + 4);
     
-    std::cout << '\n' << "- Result" << std::endl;
+    std::cout << '\n' << "- Result -" << std::endl;
     std::cout << '*' << std::setw(spacing) << std::setfill('-') << '*' << std::endl;
     std::cout << "| " << m_input << " -> ";
     for (auto s : m_strVect)
@@ -55,7 +55,7 @@ void ntot::printStats()
     std::string sizeStr = std::to_string(m_size);
     std::string numUngroupedStr = std::to_string(m_numUngrouped);
     
-    std::cout << '\n' << "- Transliteration Statistics" << std::endl;
+    std::cout << '\n' << YELLOW << "- Transliteration Statistics -" << RESET << std::endl;
     std::cout << '*' << std::setw(WIDTH) << std::setfill('-') << '*' << std::endl;
     std::cout << MSG_STAT_INPUT        << m_input        << std::setw(static_cast<unsigned>(WIDTH-strlen(MSG_STAT_INPUT)-static_cast<unsigned>(m_input.size()) + 1))                << std::setfill(' ') << '|' <<std::endl;
     std::cout << MSG_STAT_SIZE         << m_size         << std::setw(static_cast<unsigned>(WIDTH-strlen(MSG_STAT_SIZE)-static_cast<unsigned>(sizeStr.size()) + 1))                 << std::setfill(' ') << '|' <<std::endl;

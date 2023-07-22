@@ -1,11 +1,10 @@
-#ifndef _MODELS__HPP
-#define _MODELS__HPP
+#ifndef _MAIN__HPP
+#define _MAIN__HPP
 
-#include <iostream>
-#include <map>
-#include <vector>
-#include <cmath>
+#include "ntot.hpp"
+#include "rng.hpp"
 
+/* Escape Codes */
 #define RESET       "\033[0m"         ///< Reset
 #define BLACK       "\033[30m"        ///< Black
 #define RED         "\033[31m"        ///< Red
@@ -27,33 +26,14 @@
 #define ITALIC      "\033[3m"         ///< Italic
 #define UNDERLINE   "\033[4m"         ///< Underline
 
-template <
-    typename _Tp,
-    typename _Alloc     = std::allocator<_Tp>,
-    typename _Distance  = std::ptrdiff_t,
-    typename _Pointer   = _Tp*,
-    typename _Reference = _Tp&
-> struct primitive_map {
-protected:
-    typedef _Tp                       value_type;
-    typedef _Alloc                    allocator;
-    typedef _Pointer                  pointer;
-    typedef _Reference                reference;
-    typedef typename _Tp::key_type    key_type;
-    typedef typename _Tp::mapped_type mapped_type;
+const std::string promptUserForInputValue()
+{
+    std::cout << BOLDBLUE << "** Enter an integer OR nothing for a random value **" << RESET << std::endl;
+    std::string input;
+    std::getline(std::cin, input);
+    if (!input.size())
+        input = std::to_string(random_ranged_ulong(0, 1000));
+    return input;
+}
 
-    reference m_data;
-public:
-    primitive_map(reference data)
-        : m_data(data) {}
-    primitive_map& operator() (key_type const& key, mapped_type const& value)
-        { m_data[key] = value; return *this; }
-};
-
-template <typename _Tp>
-primitive_map<_Tp> init_primitive_map(_Tp& item)
-    { return primitive_map<_Tp>(item); }
-
-
-
-#endif /* _MODELS__HPP */
+#endif /* _MAIN__HPP */

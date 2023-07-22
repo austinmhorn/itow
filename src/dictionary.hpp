@@ -3,7 +3,6 @@
 
 #include "models.hpp"
 
-
 typedef std::tuple<int, int, int> Group;
 
 enum class Dictionary : unsigned {
@@ -55,7 +54,7 @@ enum class Dictionary : unsigned {
 static std::map<Dictionary, const char *> dictmap;
 
 static void __init_dictmap() {
-    map_init(dictmap)
+    init_primitive_map(dictmap)
         (Dictionary::Zero,        "Zero")
         (Dictionary::One,         "One")
         (Dictionary::Two,         "Two")
