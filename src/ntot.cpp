@@ -1,5 +1,7 @@
 #include "ntot.hpp"
-#include <iomanip>
+
+#include <iomanip> // setw, setfill
+#include <cstring> // strlen
 
 ntot::ntot(const std::string& input)
     : m_input(input)
