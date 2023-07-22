@@ -3,8 +3,21 @@
 
 #include "models.hpp"
 
+#include <iomanip>
 
 typedef std::tuple<int, int, int> Group;
+
+static void printGroup(const Group& group, const int num)
+{
+    const unsigned WIDTH = 20;
+    
+    std::cout << std::endl;
+    std::cout << BOLDYELLOW << "- Digesting Group " << num << " -" << RESET << std::endl;
+    std::cout << '*'  << std::setw(WIDTH) << std::setfill('-') << '*' << std::endl;
+    std::cout << "|     ";
+    std::cout << std::get<0>(group) << "   " << std::get<1>(group) << "   " << std::get<2>(group) << "     |" << std::endl;
+    std::cout << '*' << std::setw(WIDTH) << std::setfill('-') << '*' << std::endl;
+}
 
 enum class Dictionary : unsigned {
     Zero        = 0,
@@ -55,7 +68,7 @@ enum class Dictionary : unsigned {
 static std::map<Dictionary, const char *> dictmap;
 
 static void __init_dictmap() {
-    map_init(dictmap)
+    init_primitive_map(dictmap)
         (Dictionary::Zero,        "Zero")
         (Dictionary::One,         "One")
         (Dictionary::Two,         "Two")
