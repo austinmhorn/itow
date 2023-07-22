@@ -1,4 +1,5 @@
 #include "ntot.hpp"
+#include <iomanip>
 
 ntot::ntot(const std::string& input)
     : m_input(input)
@@ -14,6 +15,7 @@ ntot::ntot(const std::string& input)
     m_strVect.clear();
     
     init();
+    
     digest();
 }
 
@@ -23,21 +25,44 @@ ntot::~ntot()
     m_strVect.clear();
 }
 
+void ntot::setInput(const std::string& input)
+{
+    m_input = input;
+}
+
+const std::string& ntot::getInput() const
+{
+    return m_input;
+}
+
 void ntot::print()
 {
-    std::cout << std::endl << "*****************************************************" << std::endl;
+    unsigned spacing = static_cast<unsigned>(calcSpacing() + m_input.size() + 4);
+    
+    std::cout << '\n' << "- Result" << std::endl;
+    std::cout << '*' << std::setw(spacing) << std::setfill('-') << '*' << std::endl;
+    std::cout << "| " << m_input << " -> ";
     for (auto s : m_strVect)
         std::cout << s << " ";
-    std::cout << std::endl << "*****************************************************" << std::endl << std::endl;
+    std::cout << "|";
+    std::cout << '\n' << '*' << std::setw(spacing) << std::setfill('-') << '*' << std::endl;
 }
 
 void ntot::printStats()
 {
-    std::cout << "input:        " << m_input << std::endl;
-    std::cout << "size:         " << m_size << std::endl;
-    std::cout << "numGroups:    " << m_numGroups << std::endl;
-    std::cout << "numUngrouped: " << m_numUngrouped << std::endl;
-    std::cout << "ungrouped:    " << m_ungrouped << std::endl;
+    const int WIDTH = 60;
+    std::string ungroupedStr = std::to_string(m_ungrouped);
+    std::string sizeStr = std::to_string(m_size);
+    std::string numUngroupedStr = std::to_string(m_numUngrouped);
+    
+    std::cout << '\n' << "- Transliteration Statistics" << std::endl;
+    std::cout << '*' << std::setw(WIDTH) << std::setfill('-') << '*' << std::endl;
+    std::cout << MSG_STAT_INPUT        << m_input        << std::setw(static_cast<unsigned>(WIDTH-strlen(MSG_STAT_INPUT)-static_cast<unsigned>(m_input.size()) + 1))                << std::setfill(' ') << '|' <<std::endl;
+    std::cout << MSG_STAT_SIZE         << m_size         << std::setw(static_cast<unsigned>(WIDTH-strlen(MSG_STAT_SIZE)-static_cast<unsigned>(sizeStr.size()) + 1))                 << std::setfill(' ') << '|' <<std::endl;
+    std::cout << MSG_STAT_NUMGROUPS    << m_numGroups    << std::setw(static_cast<unsigned>(WIDTH-strlen(MSG_STAT_NUMGROUPS)-static_cast<unsigned>(m_numGroups) + 1))               << std::setfill(' ') << '|' <<std::endl;
+    std::cout << MSG_STAT_NUMUNGROUPED << m_numUngrouped << std::setw(static_cast<unsigned>(WIDTH-strlen(MSG_STAT_NUMUNGROUPED)-static_cast<unsigned>(numUngroupedStr.size()) + 1)) << std::setfill(' ') << '|' <<std::endl;
+    std::cout << MSG_STAT_UNGROUPED    << m_ungrouped    << std::setw(static_cast<unsigned>(WIDTH-strlen(MSG_STAT_UNGROUPED)-static_cast<unsigned>(ungroupedStr.size()) + 1))       << std::setfill(' ') << '|' <<std::endl;
+    std::cout << '*' << std::setw(WIDTH) << std::setfill('-') << '*' << std::endl;
 }
 
 void ntot::init()
@@ -59,6 +84,28 @@ bool ntot::hasOnlyDigits()
             return false;
     }
     return true;
+}
+
+unsigned int ntot::calcSpacing()
+{
+    unsigned int chCount = 0;
+    unsigned int wdCount = 0;
+    // Determine # of characters in the entire result string
+    for (auto s : m_strVect)
+    {
+        chCount += s.size();
+        wdCount++;
+    }
+    
+    // Configure left/right padding with respect to word count
+    if (wdCount < 2)
+        chCount += (2 * m_strVect.size()) + 1;
+    else if (wdCount % 2 == 0) // Even
+        chCount += (2 * m_strVect.size()) - 2;
+    else
+        chCount += (2 * m_strVect.size()) - 1;
+    
+    return chCount;
 }
 
 void ntot::calcNumGroups()
@@ -120,8 +167,9 @@ void ntot::digestSmall()
 {
     std::string str = std::to_string(m_ungrouped);
     int val = std::stoi(str);
-    char ch0, ch1, ch2;
-    int i0, i1, i2;
+    char ch0, ch1;
+    int i0, i1;
+    bool isTeenVal = false;
     
     switch(m_numUngrouped)
     {
@@ -141,23 +189,29 @@ void ntot::digestSmall()
             str = std::to_string(val);
             ch0 = str.at(0);
             i0 = std::atoi(&ch0);
-            
+
             if (i0 > 1)
                 m_strVect.push_back( dictmap.at(static_cast<Dictionary>( i0 + 18 )) );
-            
-            //ch1 = str.at(1);
-            //i1 = std::atoi(&ch1);
+            isTeenVal = (i0 == 1) ? true : false;
             
             val = val % 10;
             str = std::to_string(val);
             ch0 = str.at(0);
             i0 = std::atoi(&ch0);
             
-            
+            if (i0 != 0 && isTeenVal)
+            {
+                m_strVect.push_back( dictmap.at(static_cast<Dictionary>( i0 + 10 )) );
+                
+                val = val % 10;
+                str = std::to_string(val);
+                ch0 = str.at(0);
+                i0 = std::atoi(&ch0);
+            }
             
             if (i0 != 0 && i0 != 1)
                 m_strVect.push_back( dictmap.at(static_cast<Dictionary>( i0 )) );
-            
+
             break;
             
         case 1:
