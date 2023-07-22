@@ -1,5 +1,6 @@
 #include "ntot.hpp"
 #include <iomanip>
+#include <string>
 
 ntot::ntot(const std::string& input)
     : m_input(input)
