@@ -33,7 +33,7 @@ const std::string promptUserForInputValue()
     std::cout << ">> ";
     std::getline(std::cin, input);
     if (!input.size())
-        input = std::to_string(random_ranged_ulong(0, 999999));
+        input = std::to_string(random_ranged_ulong(0, ULONG_MAX));
     return input;
 }
 
