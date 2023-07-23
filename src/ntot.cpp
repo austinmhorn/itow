@@ -52,7 +52,7 @@ void ntot::print()
 
 void ntot::printStats()
 {
-    const int WIDTH = 35;
+    const int WIDTH = 40;
     std::string ungroupedStr = std::to_string(m_ungrouped);
     std::string sizeStr = std::to_string(m_size);
     std::string numGroupsStr = std::to_string(m_numGroups);

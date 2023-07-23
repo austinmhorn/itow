@@ -4,6 +4,8 @@
 #include "ntot.hpp"
 #include "rng.hpp"
 
+#include <climits> // ULONG_MAX
+
 /* Escape Codes */
 #define RESET       "\033[0m"         ///< Reset
 #define BLACK       "\033[30m"        ///< Black
