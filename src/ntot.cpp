@@ -180,6 +180,7 @@ void ntot::digestUngrouped()
     if ( m_numUngrouped == 1 )
     {
         m_strVect.push_back( dictmap.at(static_cast<Dictionary>( m_ungrouped )) );
+        m_strVect.push_back( dictmap.at(static_cast<Dictionary>( m_numGroups + 28 )) );
     }
     else if ( m_numUngrouped == 2 )
     {
