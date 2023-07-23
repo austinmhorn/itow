@@ -1,7 +1,7 @@
 #ifndef _MAIN__HPP
 #define _MAIN__HPP
 
-#include "ntot.hpp"
+#include "itow.hpp"
 #include "rng.hpp"
 
 #include <climits> // ULONG_MAX

@@ -1,32 +1,18 @@
 #include "main.hpp"
-#include <iomanip>
 
-int main(int argc, const char **argv)
-{
+int main(int argc, const char **argv) {
     
     std::string input = promptUserForInputValue();
     
     printRawInput(input);
     
-    ntot converter(input);
+    itow converter(input);
     
     converter.printStats();
     converter.print();
     
-
-    
     return (EXIT_SUCCESS);
 }
-
-
-
-
-
-
-
-
-
-
 
 
 
