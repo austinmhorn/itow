@@ -62,24 +62,11 @@ void itow::printStats()
 
 void itow::init()
 {
-    if ( !hasOnlyDigits() )
-        return;
-    
     m_hasOneNonzero = hasOneNonzero();
-    
     calcNumGroups();
     calcNumUngrouped();
     assignUngrouped();
     populateGrpVect();
-}
-
-bool itow::hasOnlyDigits()
-{
-    for (auto ch : m_input)
-        if (!std::isdigit(ch))
-            return false;
-
-    return true;
 }
 
 bool itow::hasOneNonzero()
@@ -107,7 +94,7 @@ void itow::calcNumGroups()
 {
     std::size_t size = m_size;
     while (size >= 3)
-    { m_numGroups++; size -= 3; }
+        m_numGroups++; size -= 3;
 }
 
 void itow::calcNumUngrouped()
@@ -149,9 +136,7 @@ void itow::digest()
     digestUngrouped();
     
     if ( m_hasOneNonzero && m_size >= 4 )
-    {
         m_strVect.push_back( dictmap.at(static_cast<Dictionary>( 28 + m_numGroups )) );
-    }
     else
     {
         unsigned num = 0;
@@ -168,36 +153,26 @@ void itow::digestUngrouped()
 {
     std::string str = std::to_string(m_ungrouped);
     
-    
     if ( m_numUngrouped == 1 )
     {
         m_strVect.push_back( dictmap.at(static_cast<Dictionary>( m_ungrouped )) );
-        m_strVect.push_back( dictmap.at(static_cast<Dictionary>( m_numGroups + 28 )) );
     }
     else if ( m_numUngrouped == 2 )
     {
         std::pair<unsigned int, unsigned int> p = std::make_pair(std::stoi(str.substr(0, 1)), std::atoi(&str.at(1)));
-        //std::cout << p.first << " " << p .second << std::endl;
         
-        if ( p.first > 1 )
-        {
+        if ( p.first > 1 ) {
             m_strVect.push_back( dictmap.at(static_cast<Dictionary>( p.first + 18 )) );
+            
             if ( p.second != 0 )
                 m_strVect.push_back( dictmap.at(static_cast<Dictionary>( p.second )) );
-                
         }
         else
-        {
             m_strVect.push_back( dictmap.at(static_cast<Dictionary>( p.second + 10 )) );
-        }
         
         if (m_size > 2)
             m_strVect.push_back( dictmap.at(static_cast<Dictionary>( m_numGroups + 28 )) );
     }
-    
-    //const unsigned WIDTH = 10;
-    //std::cout << '\n' << BOLDYELLOW << "- Digesting Ungrouped -" << RESET << std::endl;
-    //std::cout << '*' << std::setw(WIDTH) << std::setfill('-') << '*' << std::endl;
 }
 
 void itow::digestGroup(const Group& group, const int num)
@@ -208,28 +183,19 @@ void itow::digestGroup(const Group& group, const int num)
     int tens = std::get<1>(group);
     int hnds = std::get<0>(group);
     
-    if ( hnds > 0 )
-    {
+    if ( hnds > 0 ) {
         m_strVect.push_back( dictmap.at(static_cast<Dictionary>(std::get<0>(group))) );
         m_strVect.push_back( dictmap.at(Dictionary::Hundred) );
     }
     
     if ( tens > 1 )
-    {
         m_strVect.push_back( dictmap.at(static_cast<Dictionary>( tens + 18 )) );
-    }
     else if ( tens == 1 )
-    {
         m_strVect.push_back( dictmap.at(static_cast<Dictionary>( ones + 10 )) );
-    }
-    
+
     if ( tens != 1 && ones != 0 )
         m_strVect.push_back( dictmap.at(static_cast<Dictionary>( ones )) );
     
-    
     if ( m_numGroups - num > 0 )
         m_strVect.push_back( dictmap.at((static_cast<Dictionary>(static_cast<unsigned>(m_numGroups - num) + 28))) );
-        
-        
-    //waitForEnter();
 }

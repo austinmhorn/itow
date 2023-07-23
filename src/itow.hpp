@@ -38,14 +38,7 @@ public:
 private:
     
     void init();
-    
-    ///////////////////////////////////////////////////////////////////////
-    ///< @function Abort translation if input has a non digit character
-    ///< @returns True if all characters in the input string are digits
-    ///< @see init
-    ///////////////////////////////////////////////////////////////////////
-    bool hasOnlyDigits();
-    
+        
     ///////////////////////////////////////////////////////////////////////
     ///< @function Determines if input has one or more non-zero value(s)
     ///< @returns True if input has 1 and only 1 non-zero value

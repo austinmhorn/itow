@@ -28,6 +28,19 @@
 #define ITALIC      "\033[3m"         ///< Italic
 #define UNDERLINE   "\033[4m"         ///< Underline
 
+///////////////////////////////////////////////////////////////////////
+///< @function Abort translation if input has a non digit character
+///< @returns True if all characters in the input string are digits
+///////////////////////////////////////////////////////////////////////
+static bool hasOnlyDigits(const std::string& str)
+{
+    for (auto ch : str)
+        if (!std::isdigit(ch))
+            return false;
+
+    return true;
+}
+
 const std::string promptUserForInputValue()
 {
     std::string input = "";
@@ -36,6 +49,32 @@ const std::string promptUserForInputValue()
     std::getline(std::cin, input);
     if (!input.size())
         input = std::to_string(random_ranged_ulong(0, ULONG_MAX));
+    return input;
+}
+
+static std::string fetchRawInput(int argc, const char **argv)
+{
+    std::string input = "";
+    
+    try {
+        if ( argc > 1 ) {
+            input = argv[1];
+            
+            if ( !hasOnlyDigits(argv[1]) )
+                throw std::runtime_error("Invalid command line arguement: \"" + input + "\" for translation -- Expected unsigned value --");
+        }
+        else
+        {
+            input = promptUserForInputValue();
+            
+            if ( !hasOnlyDigits(input) )
+                throw std::runtime_error("Invalid command line arguement: \"" + input + "\" for translation -- Expected unsigned value --");
+        }
+    }
+    catch (const std::runtime_error& err) {
+        std::cerr << err.what() << std::endl;
+    }
+    
     return input;
 }
 
