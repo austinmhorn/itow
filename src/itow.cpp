@@ -63,6 +63,7 @@ void itow::printStats()
 void itow::init()
 {
     m_hasOneNonzero = hasOneNonzero();
+    
     calcNumGroups();
     calcNumUngrouped();
     assignUngrouped();
@@ -94,7 +95,7 @@ void itow::calcNumGroups()
 {
     std::size_t size = m_size;
     while (size >= 3)
-        m_numGroups++; size -= 3;
+        { m_numGroups++; size -= 3; }
 }
 
 void itow::calcNumUngrouped()
@@ -133,20 +134,17 @@ void itow::populateGrpVect()
 
 void itow::digest()
 {
-    digestUngrouped();
-    
+    // Digest ungrouped values
+    if ( m_numUngrouped )
+        digestUngrouped();
+    // Digest grouped values group by group
     if ( m_hasOneNonzero && m_size >= 4 )
         m_strVect.push_back( dictmap.at(static_cast<Dictionary>( 28 + m_numGroups )) );
-    else
-    {
+    else {
         unsigned num = 0;
-        
-        // Digest grouped values group by group
         for (auto group : m_grpVect)
             digestGroup(group, ++num);
     }
-    
-    
 }
 
 void itow::digestUngrouped()
@@ -156,6 +154,9 @@ void itow::digestUngrouped()
     if ( m_numUngrouped == 1 )
     {
         m_strVect.push_back( dictmap.at(static_cast<Dictionary>( m_ungrouped )) );
+        
+        if ( m_size >= 4 )
+            m_strVect.push_back( dictmap.at(static_cast<Dictionary>( m_numGroups + 28 )) );
     }
     else if ( m_numUngrouped == 2 )
     {
