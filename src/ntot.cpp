@@ -1,7 +1,7 @@
 #include "ntot.hpp"
 
-#include <iomanip> // setw, setfill
-#include <cstring> // strlen
+#include <iomanip>
+#include <cstring>
 
 ntot::ntot(const std::string& input)
     : m_input(input)
@@ -9,6 +9,7 @@ ntot::ntot(const std::string& input)
     , m_numGroups(0)
     , m_numUngrouped(m_size % 3)
     , m_ungrouped(0)
+    , m_hasOneNonzero(false)
 {
     __init_dictmap();
     
@@ -72,6 +73,8 @@ void ntot::init()
     if ( !hasOnlyDigits() )
         return;
     
+    m_hasOneNonzero = hasOneNonzero();
+    
     calcNumGroups();
     calcNumUngrouped();
     assignUngrouped();
@@ -85,6 +88,17 @@ bool ntot::hasOnlyDigits()
             return false;
 
     return true;
+}
+
+bool ntot::hasOneNonzero()
+{
+    unsigned int zeroCnt = 0;
+    unsigned int nonZeroCnt = 0;
+    
+    for (auto ch : m_input)
+        ( ch == '0' ) ? zeroCnt++ : nonZeroCnt++ ;
+    
+    return (nonZeroCnt == 1 && zeroCnt >= 3);
 }
 
 unsigned int ntot::calcSpacing()
@@ -142,11 +156,18 @@ void ntot::digest()
 {
     digestUngrouped();
     
-    unsigned num = 0;
-    
-    // Digest grouped values group by group
-    for (auto group : m_grpVect)
-        digestGroup(group, ++num);
+    if ( m_hasOneNonzero && m_size >= 4 )
+    {
+        m_strVect.push_back( dictmap.at(static_cast<Dictionary>( 28 + m_numGroups )) );
+    }
+    else
+    {
+        unsigned num = 0;
+        
+        // Digest grouped values group by group
+        for (auto group : m_grpVect)
+            digestGroup(group, ++num);
+    }
     
     
 }
@@ -168,7 +189,9 @@ void ntot::digestUngrouped()
         if ( p.first > 1 )
         {
             m_strVect.push_back( dictmap.at(static_cast<Dictionary>( p.first + 18 )) );
-            m_strVect.push_back( dictmap.at(static_cast<Dictionary>( p.second )) );
+            if ( p.second != 0 )
+                m_strVect.push_back( dictmap.at(static_cast<Dictionary>( p.second )) );
+                
         }
         else
         {
@@ -207,7 +230,7 @@ void ntot::digestGroup(const Group& group, const int num)
         m_strVect.push_back( dictmap.at(static_cast<Dictionary>( ones + 10 )) );
     }
     
-    if ( tens != 1 )
+    if ( tens != 1 && ones != 0 )
         m_strVect.push_back( dictmap.at(static_cast<Dictionary>( ones )) );
     
     

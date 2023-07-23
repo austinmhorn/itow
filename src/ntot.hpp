@@ -47,6 +47,8 @@ private:
     
     // Aborts translation if any character in the input is not a digit
     bool hasOnlyDigits();
+    //
+    bool hasOneNonzero();
     // Helper function for drawing box around result
     unsigned int calcSpacing();
     // Calculates # of "Groups", or tuple or 3 numbers
@@ -68,13 +70,14 @@ private:
     
 private:
     
-    std::string              m_input;        ///< Raw input string
-    std::size_t              m_size;         ///< Length of input string
-    std::size_t              m_numGroups;    ///< Number of groups 
-    std::size_t              m_numUngrouped; ///< Number of ungrouped values [0-2]
-    unsigned short int       m_ungrouped;    ///< Integer value of ungrouped numbers
-    std::vector<Group>       m_grpVect;      ///< Stores groups in order of processing
-    std::vector<std::string> m_strVect;      ///< Stores result translations
+    std::string              m_input;         ///< Raw input string
+    std::size_t              m_size;          ///< Length of input string
+    std::size_t              m_numGroups;     ///< Number of groups
+    std::size_t              m_numUngrouped;  ///< Number of ungrouped values [0-2]
+    unsigned short int       m_ungrouped;     ///< Integer value of ungrouped numbers
+    std::vector<Group>       m_grpVect;       ///< Stores groups in order of processing
+    std::vector<std::string> m_strVect;       ///< Stores result translations
+    bool                     m_hasOneNonzero;
 };
 
 #endif /* _NTOT__HPP */

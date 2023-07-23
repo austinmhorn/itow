@@ -37,4 +37,15 @@ const std::string promptUserForInputValue()
     return input;
 }
 
+static void printRawInput(const std::string& input)
+{
+    const unsigned WIDTH = 9;
+
+    std::cout << std::endl << std::endl;
+    std::cout << BOLDYELLOW << "- Raw Input -" << RESET << std::endl;
+    std::cout << '*' << std::setw(static_cast<unsigned>(WIDTH+input.size())) << std::setfill('-') << '*' << std::endl;
+    std::cout << "|   " << "\"" << input << "\"" << "   |" << std::endl;
+    std::cout << '*' << std::setw(static_cast<unsigned>(WIDTH+input.size())) << std::setfill('-') << '*' << std::endl;
+}
+
 #endif /* _MAIN__HPP */
