@@ -14,7 +14,7 @@
 
 Example Output:
 
-    23456 -> Twenty three thousand four hundred fifty six
+    23456 -> Twenty Three Thousand Four Hundred Fifty Six
 
     444265 -> Four Hundred Fourty Four Thousand Two Hundred Sixty Five
 
