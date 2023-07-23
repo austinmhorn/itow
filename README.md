@@ -1,5 +1,5 @@
-<h1><p align="center">ntot</p></h1>
-<p align="center"><i>"Number-To-Orthograpic-Text"</i></p>
+<h1><p align="center">itow</p></h1>
+<p align="center"><i>"Integer-To-Words"</i></p>
 <p align="center">A high-speed, lightweight conversion tool for transliterating numerical values into orthographic text</p>
 
 ---
@@ -16,6 +16,10 @@ Example Output:
 
     23456 -> Twenty three thousand four hundred fifty six
 
+    444265 -> Four Hundred Fourty Four Thousand Two Hundred Sixty Five
+
+    2398592602632 -> Two Trillion Three Hundred Ninety Eight Billion Five Hundred Ninety Two Million Six Hundred Two Thousand Six Hundred Thirty Two
+
 ---
 
 <h4>Build:</h4>
@@ -25,4 +29,4 @@ Example Output:
 
 <h4>Run:</h4>
 
-    ./bin/ntot
+    ./bin/itow
