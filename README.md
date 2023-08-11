@@ -30,3 +30,9 @@ Example Output:
 <h4>Run:</h4>
 
     ./bin/itow
+
+
+
+(Optional) - Run using command line argument:
+
+    ./bin/itow 78341
