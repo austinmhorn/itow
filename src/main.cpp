@@ -11,21 +11,3 @@ int main(int argc, const char **argv) {
     
     return (EXIT_SUCCESS);
 }
-
-
-
-
-
-/*
-for (int i = 0; i < 1000000; i++)
-{
-    std::string input = std::to_string(i);
-    
-    printRawInput(input);
-    
-    ntot converter(input);
-    
-    converter.printStats();
-    converter.print();
-}
-*/
