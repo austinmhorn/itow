@@ -24,7 +24,7 @@ Example Output:
 
 <h4>Build:</h4>
 
-    cmake -S . -B build -D CMAKE_BUILD_TYPE=Release
+    cmake -S . -B build
     cmake --build build --config Release
 
 <h4>Run:</h4>
