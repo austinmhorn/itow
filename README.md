@@ -5,7 +5,7 @@
 ---
 
 <h4><p align="center"><i>Translation Range</i></p></h4>
-<p align="center"><i>0 to +18,446,744,073,709,551,615</i></p>
+<p align="center"><i>0 to +4,294,967,295</i></p>
 
 <h4><p align="center"><i>Average Translation Speed</i></p></h4>
 <p align="center"><i>0.00s user 0.00s system 57% cpu 0.007 total</i></p>
